@@ -10,6 +10,15 @@ module.exports = function(app) {
     })
   );
   
+  // Proxy uploads directory (for images)
+  app.use(
+    '/uploads',
+    createProxyMiddleware({
+      target: 'http://localhost:5001',
+      changeOrigin: true,
+    })
+  );
+  
   // Proxy health check requests
   app.use(
     '/health',
