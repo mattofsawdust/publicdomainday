@@ -48,6 +48,8 @@ The application consists of two main components:
 - Added server-side redirects for admin routes
 - Enhanced Content Security Policy for better security
 - Fixed port configuration to ensure proper client-server communication
+- Enhanced image display to maintain original aspect ratios
+- Implemented masonry layout for both main gallery and related images
 
 ## Running the Application
 
