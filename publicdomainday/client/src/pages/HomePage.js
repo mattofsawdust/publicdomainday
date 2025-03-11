@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import { FaSearch } from 'react-icons/fa';
 import { getAllImages, getCategories } from '../utils/api';
@@ -12,7 +13,7 @@ const PageContainer = styled.div`
 
 const HeroSection = styled.div`
   position: relative;
-  height: 500px;
+  height: ${props => props.compact ? '300px' : '500px'};
   background-image: url('https://images.unsplash.com/photo-1535957998253-26ae1ef29506?ixlib=rb-1.2.1&auto=format&fit=crop&w=1950&q=80');
   background-size: cover;
   background-position: center;
@@ -21,6 +22,7 @@ const HeroSection = styled.div`
   justify-content: center;
   color: white;
   margin-bottom: 2rem;
+  transition: height 0.3s ease;
   
   &::before {
     content: '';
@@ -39,6 +41,33 @@ const HeroContent = styled.div`
   z-index: 2;
   max-width: 800px;
   padding: 0 2rem;
+`;
+
+const TagResultsTitle = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+  
+  h2 {
+    font-size: 1.8rem;
+    margin: 0;
+    color: #333;
+  }
+  
+  .tag {
+    background-color: #0066cc;
+    color: white;
+    padding: 0.3rem 0.8rem;
+    border-radius: 4px;
+    font-size: 1.1rem;
+  }
+  
+  .count {
+    color: #666;
+    font-size: 1.1rem;
+  }
 `;
 
 const HeroTitle = styled.h1`
@@ -161,6 +190,8 @@ const LoadMoreButton = styled.button`
 `;
 
 const HomePage = () => {
+  const location = useLocation();
+  const navigate = useNavigate();
   const [images, setImages] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -173,7 +204,7 @@ const HomePage = () => {
   ]);
   const [categoriesLoading, setCategoriesLoading] = useState(true);
   
-  const fetchImages = async (reset = false) => {
+  const fetchImages = async (reset = false, tagParam = null) => {
     try {
       setLoading(true);
       
@@ -183,13 +214,17 @@ const HomePage = () => {
         limit: 20
       };
       
-      // Add search query if exists
-      if (searchTerm.trim()) {
+      // If a tag parameter is provided (from URL), use it
+      if (tagParam) {
+        params.tag = tagParam;
+        console.log(`Filtering by tag parameter: "${tagParam}"`);
+      }
+      // Otherwise, add search query if exists
+      else if (searchTerm.trim()) {
         params.search = searchTerm.trim();
       }
-      
-      // Add category filter if not 'all'
-      if (activeCategory !== 'all') {
+      // Otherwise, add category filter if not 'all'
+      else if (activeCategory !== 'all') {
         // Get the original name from the categories array (preserves spaces and case)
         const selectedCategory = categories.find(cat => cat.id === activeCategory);
         if (selectedCategory) {
@@ -300,9 +335,48 @@ const HomePage = () => {
     }
   };
 
+  // Check for URL parameters
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    const tagParam = params.get('tag');
+    const searchParam = params.get('search');
+    
+    // Handle tag parameter
+    if (tagParam) {
+      console.log(`Tag parameter found in URL: ${tagParam}`);
+      setSearchTerm(''); // Clear any existing search
+      
+      // Try to find a matching category to set the UI state
+      const matchingCategory = categories.find(cat => 
+        cat.name.toLowerCase() === tagParam.toLowerCase() ||
+        cat.id.toLowerCase() === tagParam.toLowerCase()
+      );
+      
+      if (matchingCategory) {
+        setActiveCategory(matchingCategory.id);
+      } else {
+        setActiveCategory('all'); // Reset category selection if no match
+      }
+      
+      // Set this tag as the search term to find related images
+      fetchImages(true, tagParam);
+    } 
+    // Handle search parameter
+    else if (searchParam) {
+      console.log(`Search parameter found in URL: ${searchParam}`);
+      setSearchTerm(searchParam);
+      setActiveCategory('all'); // Reset category when searching
+      
+      // Use the search term to find matching images
+      fetchImages(true);
+    }
+  }, [location.search, categories]);
+  
   // Initial load
   useEffect(() => {
-    fetchImages();
+    if (!location.search) { // Only fetch all images if there are no search params
+      fetchImages();
+    }
     fetchCategories();
   }, []);
   
@@ -313,6 +387,14 @@ const HomePage = () => {
   
   const handleSearch = (e) => {
     e.preventDefault();
+    
+    // Update URL to reflect the search
+    if (searchTerm.trim()) {
+      navigate(`/?search=${encodeURIComponent(searchTerm.trim())}`);
+    } else {
+      navigate('/'); // Clear parameters if search is empty
+    }
+    
     fetchImages(true);
   };
   
@@ -331,15 +413,28 @@ const HomePage = () => {
     if (searchTerm) {
       setSearchTerm('');
     }
+    
+    // Update URL to reflect the category filter
+    if (categoryId && categoryId !== 'all') {
+      const categoryName = category ? category.name : categoryId;
+      navigate(`/?tag=${encodeURIComponent(categoryName)}`);
+    } else {
+      navigate('/'); // Clear parameters if "All" is selected
+    }
   };
   
   const handleLoadMore = () => {
     fetchImages();
   };
   
+  // Determine if we're in tag search mode
+  const params = new URLSearchParams(location.search);
+  const tagParam = params.get('tag');
+  const isTagSearch = Boolean(tagParam);
+  
   return (
     <PageContainer>
-      <HeroSection>
+      <HeroSection compact={isTagSearch}>
         <HeroContent>
           <HeroTitle>Public Domain Day</HeroTitle>
           <HeroSubtitle>
@@ -362,6 +457,13 @@ const HomePage = () => {
       </HeroSection>
       
       <ContentSection>
+        {isTagSearch && (
+          <TagResultsTitle>
+            <h2>Images tagged with</h2>
+            <span className="tag">{tagParam}</span>
+            <span className="count">({images.length} results)</span>
+          </TagResultsTitle>
+        )}
         <CategoryTabs>
           {categoriesLoading ? (
             // Show skeleton loaders while categories are loading

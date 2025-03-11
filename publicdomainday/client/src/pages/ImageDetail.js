@@ -278,16 +278,20 @@ const TagsContainer = styled.div`
   margin-top: 1rem;
 `;
 
-const Tag = styled.span`
+const Tag = styled(Link)`
   background-color: #f0f0f0;
   color: #333;
   padding: 0.4rem 0.7rem;
   border-radius: 4px;
   font-size: 0.85rem;
   cursor: pointer;
+  text-decoration: none;
+  display: inline-block;
+  transition: all 0.2s;
   
   &:hover {
     background-color: #e0e0e0;
+    transform: translateY(-2px);
   }
 `;
 
@@ -643,13 +647,17 @@ const ImageDetail = () => {
                   <h3><FaTags style={{ marginRight: '0.5rem' }} /> Tags</h3>
                   <TagsContainer>
                     {image.tags && image.tags.map((tag, index) => (
-                      <Tag key={`user-${index}`}>{tag}</Tag>
+                      <Tag key={`user-${index}`} to={`/?tag=${encodeURIComponent(tag)}`}>{tag}</Tag>
                     ))}
                     
                     {image.aiTags && image.aiTags
                       .filter(tag => !image.tags || !image.tags.includes(tag))
                       .map((tag, index) => (
-                        <Tag key={`ai-${index}`} style={{ background: '#e6f7ff', borderColor: '#91d5ff' }}>
+                        <Tag 
+                          key={`ai-${index}`} 
+                          to={`/?tag=${encodeURIComponent(tag)}`}
+                          style={{ background: '#e6f7ff', borderColor: '#91d5ff' }}
+                        >
                           {tag}
                         </Tag>
                       ))
