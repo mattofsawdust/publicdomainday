@@ -543,6 +543,134 @@ exports.getPopularCategories = async (req, res) => {
   }
 };
 
+// AI-powered search concierge
+const aiSearchService = require('../utils/aiSearchService');
+
+exports.aiConciergeSearch = async (req, res) => {
+  try {
+    const { query } = req.query;
+    
+    if (!query) {
+      return res.status(400).json({ message: 'Search query is required' });
+    }
+    
+    console.log(`[AI SEARCH] Processing search query: "${query}"`);
+    
+    // Step 1: Process the natural language query with AI
+    const categories = await Image.aggregate([
+      { $unwind: "$tags" },
+      { $group: { _id: "$tags", count: { $sum: 1 } } },
+      { $sort: { count: -1 } },
+      { $limit: 30 },
+      { $project: { _id: 0, name: "$_id", count: 1 } }
+    ]);
+    
+    const queryAnalysis = await aiSearchService.processSearchQuery(query, {
+      categories: categories.map(cat => cat.name)
+    });
+    
+    console.log('[AI SEARCH] Query analysis:', JSON.stringify(queryAnalysis));
+    
+    // Step 2: Build the search filter based on AI analysis
+    let filter = {};
+    const searchTerms = queryAnalysis.searchTerms || [];
+    const filters = queryAnalysis.filters || {};
+    
+    // Apply year filter if specified
+    if (filters.year) {
+      if (filters.year.includes('-')) {
+        // Year range (e.g., 1900-1950)
+        const [startYear, endYear] = filters.year.split('-').map(Number);
+        filter.year = { $gte: startYear, $lte: endYear };
+      } else {
+        filter.year = parseInt(filters.year);
+      }
+    }
+    
+    // Apply author filter if specified
+    if (filters.author) {
+      filter.author = { $regex: filters.author, $options: 'i' };
+    }
+    
+    // Apply tag filters if specified
+    const tagFilters = [];
+    
+    // Include specific category if mentioned
+    if (filters.category) {
+      tagFilters.push(
+        { tags: filters.category },
+        { aiTags: filters.category }
+      );
+    }
+    
+    // Include extracted tags
+    if (filters.tags && filters.tags.length > 0) {
+      filters.tags.forEach(tag => {
+        tagFilters.push(
+          { tags: { $regex: new RegExp(tag, 'i') } },
+          { aiTags: { $regex: new RegExp(tag, 'i') } }
+        );
+      });
+    }
+    
+    // Add general search terms if no specific tags/filters
+    if (tagFilters.length === 0 && searchTerms.length > 0) {
+      searchTerms.forEach(term => {
+        tagFilters.push(
+          { tags: { $regex: new RegExp(term, 'i') } },
+          { aiTags: { $regex: new RegExp(term, 'i') } },
+          { title: { $regex: new RegExp(term, 'i') } },
+          { description: { $regex: new RegExp(term, 'i') } },
+          { aiDescription: { $regex: new RegExp(term, 'i') } }
+        );
+      });
+    }
+    
+    // Add the tag filters to the main filter
+    if (tagFilters.length > 0) {
+      filter.$or = tagFilters;
+    }
+    
+    console.log('[AI SEARCH] Search filter:', JSON.stringify(filter));
+    
+    // Step 3: Execute the search query
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 12;
+    const skip = (page - 1) * limit;
+    
+    const images = await Image.find(filter)
+      .sort({ createdAt: -1 })
+      .skip(skip)
+      .limit(limit)
+      .populate('uploadedBy', 'username');
+    
+    const totalImages = await Image.countDocuments(filter);
+    
+    console.log(`[AI SEARCH] Found ${totalImages} matching images`);
+    
+    // Step 4: Generate conversational response based on results
+    const searchResults = {
+      images,
+      totalPages: Math.ceil(totalImages / limit),
+      currentPage: page,
+      totalImages
+    };
+    
+    const enhancedResponse = await aiSearchService.generateSearchResponse(
+      searchResults,
+      queryAnalysis
+    );
+    
+    res.json(enhancedResponse);
+  } catch (error) {
+    console.error('AI search error:', error);
+    res.status(500).json({ 
+      message: 'Error processing your search request',
+      error: error.message
+    });
+  }
+};
+
 // Reanalyze an image with AI
 exports.reanalyzeImage = async (req, res) => {
   try {

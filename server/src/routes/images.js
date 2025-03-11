@@ -19,6 +19,11 @@ router.get('/trending', imageController.getTrendingImages);
 // @access  Public
 router.get('/categories', imageController.getPopularCategories);
 
+// @route   GET /api/images/ai-search
+// @desc    AI-powered concierge search with natural language understanding
+// @access  Public
+router.get('/ai-search', imageController.aiConciergeSearch);
+
 // @route   GET /api/images/:id
 // @desc    Get image by ID
 // @access  Public

@@ -151,6 +151,24 @@ export const downloadImage = (imageId) => {
   return `${API_URL}/images/${imageId}/download`;
 };
 
+// Utility function to get absolute URL for image paths
+export const getImageUrl = (imageUrl) => {
+  if (!imageUrl) return '';
+  
+  // If already an absolute URL, return as is
+  if (imageUrl.startsWith('http')) {
+    return imageUrl;
+  }
+  
+  // For relative URLs, prepend the server base URL
+  // Remove /api from the URL since image paths don't include it
+  const BASE_URL = process.env.NODE_ENV === 'production' 
+    ? '' // In production, image URLs are relative to the domain
+    : 'http://localhost:5001'; // In development, prepend server domain
+    
+  return `${BASE_URL}${imageUrl}`;
+};
+
 export const getTrendingImages = (params) => {
   return api.get('/images/trending', { params });
 };
@@ -161,6 +179,15 @@ export const getCategories = (params) => {
 
 export const getRelatedImages = (imageId, params) => {
   return api.get(`/images/${imageId}/related`, { params });
+};
+
+export const aiConciergeSearch = (query, params = {}) => {
+  return api.get('/images/ai-search', { 
+    params: { 
+      query,
+      ...params
+    }
+  });
 };
 
 // Blog API calls

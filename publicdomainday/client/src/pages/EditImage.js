@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import { FaSave, FaTrash, FaTimes, FaPlus, FaSync } from 'react-icons/fa';
-import { getImageById, updateImage, deleteImage } from '../utils/api';
+import { getImageById, updateImage, deleteImage, getImageUrl } from '../utils/api';
 import Skeleton from 'react-loading-skeleton';
 
 const PageContainer = styled.div`
@@ -419,7 +419,7 @@ const EditImage = () => {
       
       <FormGrid>
         <LeftColumn>
-          <ImagePreview src={image.imageUrl} alt={image.title} />
+          <ImagePreview src={getImageUrl(image.imageUrl)} alt={image.title} />
           
           <FormSection>
             <SectionTitle>

@@ -1,7 +1,7 @@
 import React from 'react';
-import { Link, useNavigate, useLocation } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
-import { FaUser, FaSignOutAlt, FaUpload, FaCog, FaBlog, FaFire, FaHome } from 'react-icons/fa';
+import { FaUser, FaSignOutAlt, FaUpload, FaCog, FaBlog, FaFire, FaHome, FaRobot } from 'react-icons/fa';
 import { useAuth } from '../../context/AuthContext';
 
 const HeaderContainer = styled.header`
@@ -9,6 +9,7 @@ const HeaderContainer = styled.header`
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   padding: 1rem 2rem;
   display: flex;
+  flex-wrap: wrap;
   justify-content: space-between;
   align-items: center;
   position: sticky;
@@ -32,6 +33,45 @@ const Logo = styled(Link)`
 const Nav = styled.nav`
   display: flex;
   align-items: center;
+`;
+
+const SearchBar = styled.div`
+  display: flex;
+  align-items: center;
+  margin-left: 2rem;
+  flex: 1;
+  max-width: 500px;
+  position: relative;
+  
+  @media (max-width: 992px) {
+    order: 3;
+    margin-top: 1rem;
+    margin-left: 0;
+    max-width: 100%;
+    width: 100%;
+  }
+`;
+
+// Simple button for search
+const SimpleSearchButton = styled.button`
+  background: #0066cc;
+  color: white;
+  border: none;
+  border-radius: 20px;
+  height: 38px;
+  padding: 0 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: background-color 0.2s;
+  margin-left: auto;
+  
+  &:hover {
+    background: #0055aa;
+  }
 `;
 
 const NavItem = styled(Link)`
@@ -131,7 +171,6 @@ const HomeButtonStyled = styled.button`
 // Custom component for Home button to ensure it always clears filters
 const HomeButton = ({ children }) => {
   const navigate = useNavigate();
-  const location = useLocation();
   
   const handleHomeClick = () => {
     // Always go to home page with no query parameters
@@ -183,6 +222,12 @@ const Header = () => {
     <HeaderContainer>
       <Logo to="/" onClick={handleLogoClick}>Public Domain Day</Logo>
       
+      <SearchBar>
+        <SimpleSearchButton onClick={() => navigate('/search')}>
+          <FaRobot /> AI Search
+        </SimpleSearchButton>
+      </SearchBar>
+      
       <Nav>
         {currentUser ? (
           <>
@@ -229,8 +274,6 @@ const Header = () => {
             <NavItem to="/batch-upload">
               <FaUpload /> Upload
             </NavItem>
-            <NavItem to="/login">Login</NavItem>
-            <NavItem to="/register">Register</NavItem>
           </>
         )}
       </Nav>

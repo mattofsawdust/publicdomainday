@@ -2,7 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 import { FaHeart, FaRegHeart, FaEye } from 'react-icons/fa';
-import { toggleLikeImage } from '../../utils/api';
+import { toggleLikeImage, getImageUrl } from '../../utils/api';
 import { useAuth } from '../../context/AuthContext';
 
 const Card = styled.div`
@@ -131,7 +131,7 @@ const ImageCard = ({ image }) => {
       <Link to={`/image/${image._id}`}>
         <ImageContainer>
           <Image 
-            src={image.imageUrl.startsWith('http') ? image.imageUrl : `http://localhost:5001${image.imageUrl}`} 
+            src={getImageUrl(image.imageUrl)} 
             alt={image.title} 
           />
         </ImageContainer>

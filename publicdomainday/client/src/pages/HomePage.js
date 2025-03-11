@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
-import { FaSearch } from 'react-icons/fa';
 import { getAllImages, getCategories } from '../utils/api';
 import ImageGrid from '../components/images/ImageGrid';
 import Skeleton from 'react-loading-skeleton';
@@ -9,38 +8,6 @@ import 'react-loading-skeleton/dist/skeleton.css';
 
 const PageContainer = styled.div`
   min-height: 100vh;
-`;
-
-const HeroSection = styled.div`
-  position: relative;
-  height: ${props => props.compact ? '300px' : '500px'};
-  background-image: url('https://images.unsplash.com/photo-1535957998253-26ae1ef29506?ixlib=rb-1.2.1&auto=format&fit=crop&w=1950&q=80');
-  background-size: cover;
-  background-position: center;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: white;
-  margin-bottom: 2rem;
-  transition: height 0.3s ease;
-  
-  &::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: rgba(0, 0, 0, 0.4);
-    z-index: 1;
-  }
-`;
-
-const HeroContent = styled.div`
-  text-align: center;
-  z-index: 2;
-  max-width: 800px;
-  padding: 0 2rem;
 `;
 
 const TagResultsTitle = styled.div`
@@ -70,50 +37,6 @@ const TagResultsTitle = styled.div`
   }
 `;
 
-const HeroTitle = styled.h1`
-  font-size: 2.5rem;
-  margin-bottom: 1rem;
-  
-  @media (min-width: 768px) {
-    font-size: 3.5rem;
-  }
-`;
-
-const HeroSubtitle = styled.p`
-  font-size: 1.2rem;
-  margin-bottom: 2rem;
-  
-  @media (min-width: 768px) {
-    font-size: 1.5rem;
-  }
-`;
-
-const SearchContainer = styled.div`
-  position: relative;
-  max-width: 600px;
-  margin: 0 auto;
-`;
-
-const SearchInput = styled.input`
-  width: 100%;
-  padding: 1rem 1rem 1rem 3rem;
-  border-radius: 4px;
-  border: none;
-  font-size: 1.1rem;
-  
-  &:focus {
-    outline: none;
-    box-shadow: 0 0 0 3px rgba(0, 102, 204, 0.3);
-  }
-`;
-
-const SearchIcon = styled.div`
-  position: absolute;
-  left: 1rem;
-  top: 50%;
-  transform: translateY(-50%);
-  color: #555;
-`;
 
 const ContentSection = styled.div`
   max-width: 1400px;
@@ -346,6 +269,13 @@ const HomePage = () => {
     const tagParam = params.get('tag');
     const searchParam = params.get('search');
     
+    // Since we've added AI search to the header, redirect search queries there
+    if (searchParam) {
+      console.log('Redirecting search query to AI search page');
+      navigate(`/search?query=${encodeURIComponent(searchParam)}`);
+      return;
+    }
+    
     // Handle tag parameter
     if (tagParam) {
       console.log(`Tag parameter found in URL: ${tagParam}`);
@@ -385,7 +315,7 @@ const HomePage = () => {
       // Use the search term to find matching images
       fetchImages(true);
     }
-  }, [location.search, categories]);
+  }, [location.search, categories, navigate]);
   
   // Initial load
   useEffect(() => {
@@ -476,29 +406,7 @@ const HomePage = () => {
   
   return (
     <PageContainer>
-      <HeroSection compact={isTagSearch}>
-        <HeroContent>
-          <HeroTitle>Public Domain Day</HeroTitle>
-          <HeroSubtitle>
-            Discover and share beautiful public domain imagery from around the world
-          </HeroSubtitle>
-          <form onSubmit={handleSearch}>
-            <SearchContainer>
-              <SearchIcon>
-                <FaSearch />
-              </SearchIcon>
-              <SearchInput
-                type="text"
-                placeholder="Search public domain images..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-              />
-            </SearchContainer>
-          </form>
-        </HeroContent>
-      </HeroSection>
-      
-      <ContentSection>
+      <ContentSection style={{ paddingTop: '2rem' }}>
         {isTagSearch && (
           <TagResultsTitle>
             <h2>Images tagged with</h2>

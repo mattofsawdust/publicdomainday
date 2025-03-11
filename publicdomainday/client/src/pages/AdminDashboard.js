@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 import { FaPlus, FaEdit, FaTrash, FaSearch, FaUpload, FaSync } from 'react-icons/fa';
-import { getAllImages, deleteImage } from '../utils/api';
+import { getAllImages, deleteImage, getImageUrl } from '../utils/api';
 import Skeleton from 'react-loading-skeleton';
 
 const DashboardContainer = styled.div`
@@ -484,7 +484,10 @@ const AdminDashboard = () => {
                     />
                   </TableCell>
                   <TableCell>
-                    <ImagePreview src={image.imageUrl} alt={image.title} />
+                    <ImagePreview 
+                      src={getImageUrl(image.imageUrl)} 
+                      alt={image.title} 
+                    />
                   </TableCell>
                   <TableCell>{image.title}</TableCell>
                   <TableCell>{image.author || 'Unknown'}</TableCell>

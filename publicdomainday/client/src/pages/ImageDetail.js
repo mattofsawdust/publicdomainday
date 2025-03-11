@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import styled from 'styled-components';
 import { FaDownload, FaHeart, FaArrowLeft, FaTags, FaInfoCircle, FaSearch, FaTimes, FaSpinner, FaEye } from 'react-icons/fa';
-import { getImageById, toggleLikeImage, downloadImage, getAllImages, getRelatedImages } from '../utils/api';
+import { getImageById, toggleLikeImage, downloadImage, getAllImages, getRelatedImages, getImageUrl } from '../utils/api';
 import Masonry from 'react-masonry-css';
 
 // Styled components
@@ -606,7 +606,7 @@ const ImageDetail = () => {
         {/* Main Image Section (Top) */}
         <MainImageContainer>
           <MainImage 
-            src={image.imageUrl.startsWith('http') ? image.imageUrl : `http://localhost:5001${image.imageUrl}`} 
+            src={getImageUrl(image.imageUrl)} 
             alt={image.title} 
             onClick={openModal}
           />
@@ -620,7 +620,7 @@ const ImageDetail = () => {
                 <FaTimes /> Close
               </CloseButton>
               <FullSizeImage 
-                src={image.imageUrl.startsWith('http') ? image.imageUrl : `http://localhost:5001${image.imageUrl}`} 
+                src={getImageUrl(image.imageUrl)} 
                 alt={image.title}
               />
               <ZoomIndicator>
