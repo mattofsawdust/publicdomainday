@@ -1,0 +1,1223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Public Domain Day</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap">
+  <style>
+    :root {
+      --primary-color: #05a081;
+      --secondary-color: #767676;
+      --text-color: #111;
+      --light-gray: #f5f5f5;
+      --border-color: #ddd;
+      --shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+      --radius: 4px;
+    }
+    
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body { 
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      color: var(--text-color);
+      background-color: white;
+      line-height: 1.5;
+    }
+    
+    a {
+      color: var(--primary-color);
+      text-decoration: none;
+    }
+    
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 20px 5%;
+      border-bottom: 1px solid var(--border-color);
+      background-color: white;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    
+    .logo {
+      font-size: 22px;
+      font-weight: 700;
+      color: var(--text-color);
+    }
+    
+    .logo span {
+      color: var(--primary-color);
+    }
+    
+    .search-container {
+      flex: 1;
+      max-width: 600px;
+      margin: 0 20px;
+      position: relative;
+    }
+    
+    .search-input {
+      width: 100%;
+      padding: 12px 20px;
+      border-radius: 24px;
+      border: 1px solid var(--border-color);
+      font-size: 15px;
+      background: var(--light-gray);
+      transition: all 0.2s;
+    }
+    
+    .search-input:focus {
+      outline: none;
+      background: white;
+      border-color: var(--primary-color);
+      box-shadow: 0 0 0 4px rgba(5, 160, 129, 0.1);
+    }
+    
+    .search-icon {
+      position: absolute;
+      right: 15px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--secondary-color);
+    }
+    
+    .nav {
+      display: flex;
+      gap: 20px;
+      align-items: center;
+    }
+    
+    .nav-link {
+      color: var(--text-color);
+      font-weight: 500;
+      font-size: 15px;
+      cursor: pointer;
+    }
+    
+    .btn {
+      background: var(--primary-color);
+      color: white;
+      border: none;
+      border-radius: var(--radius);
+      padding: 10px 20px;
+      font-size: 15px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    
+    .btn:hover {
+      background: #048d70;
+    }
+    
+    .btn-outline {
+      background: transparent;
+      border: 1px solid var(--border-color);
+      color: var(--text-color);
+    }
+    
+    .btn-outline:hover {
+      background: var(--light-gray);
+    }
+    
+    .hero {
+      text-align: center;
+      padding: 60px 20px;
+      background: url('https://images.unsplash.com/photo-1591192318347-5bda049928c6?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3wxMTI1OHwwfDF8cmFuZG9tfHx8fHx8fHx8MTcxMTQ5MTQ3OHw&ixlib=rb-4.0.3&q=80&w=2000') center/cover;
+      color: white;
+      position: relative;
+    }
+    
+    .hero::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.4);
+      z-index: 1;
+    }
+    
+    .hero-content {
+      position: relative;
+      z-index: 2;
+      max-width: 800px;
+      margin: 0 auto;
+    }
+    
+    .hero h1 {
+      font-size: 36px;
+      margin-bottom: 16px;
+      font-weight: 700;
+    }
+    
+    .hero p {
+      font-size: 18px;
+      margin-bottom: 24px;
+      opacity: 0.9;
+    }
+    
+    .hero-search {
+      width: 100%;
+      max-width: 600px;
+      margin: 0 auto;
+      position: relative;
+    }
+    
+    .hero-search input {
+      width: 100%;
+      padding: 16px 24px;
+      border-radius: 4px;
+      border: none;
+      font-size: 17px;
+    }
+    
+    .hero-search input:focus {
+      outline: none;
+    }
+    
+    .main {
+      padding: 40px 5%;
+    }
+    
+    .section-title {
+      font-size: 24px;
+      margin-bottom: 20px;
+      font-weight: 600;
+    }
+    
+    .tabs {
+      display: flex;
+      gap: 16px;
+      margin-bottom: 24px;
+      border-bottom: 1px solid var(--border-color);
+      padding-bottom: 12px;
+    }
+    
+    .tab {
+      padding: 8px 16px;
+      border-radius: var(--radius);
+      cursor: pointer;
+      font-weight: 500;
+    }
+    
+    .tab.active {
+      background: var(--light-gray);
+      color: var(--primary-color);
+    }
+    
+    .image-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 24px;
+      margin-bottom: 40px;
+    }
+    
+    .image-card {
+      border-radius: var(--radius);
+      overflow: hidden;
+      position: relative;
+      transition: all 0.3s;
+      box-shadow: var(--shadow);
+      cursor: pointer;
+    }
+    
+    .image-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.12);
+    }
+    
+    .image-card img {
+      width: 100%;
+      height: 240px;
+      object-fit: cover;
+      display: block;
+    }
+    
+    .image-info {
+      padding: 16px;
+      background: white;
+    }
+    
+    .image-title {
+      font-size: 16px;
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+    
+    .image-meta {
+      font-size: 14px;
+      color: var(--secondary-color);
+      display: flex;
+      justify-content: space-between;
+    }
+    
+    .image-author {
+      font-weight: 500;
+    }
+    
+    .image-year {
+      font-weight: 500;
+    }
+    
+    .tag-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 12px;
+    }
+    
+    .tag {
+      background: var(--light-gray);
+      padding: 4px 10px;
+      border-radius: 16px;
+      font-size: 12px;
+      font-weight: 500;
+      cursor: pointer;
+    }
+    
+    .tag:hover {
+      background: #e0e0e0;
+    }
+    
+    /* Modal styles */
+    .modal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.8);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+      opacity: 0;
+      visibility: hidden;
+      transition: all 0.3s;
+    }
+    
+    .modal.active {
+      opacity: 1;
+      visibility: visible;
+    }
+    
+    .modal-content {
+      background: white;
+      border-radius: var(--radius);
+      width: 95%;
+      max-width: 500px;
+      max-height: 90vh;
+      overflow-y: auto;
+      position: relative;
+    }
+    
+    .modal-close {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      background: white;
+      border: none;
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+    
+    .modal-header {
+      padding: 20px;
+      border-bottom: 1px solid var(--border-color);
+    }
+    
+    .modal-title {
+      font-size: 20px;
+      font-weight: 600;
+    }
+    
+    .modal-body {
+      padding: 20px;
+    }
+    
+    .form-group {
+      margin-bottom: 16px;
+    }
+    
+    .form-label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: 500;
+    }
+    
+    .form-control {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius);
+      font-size: 15px;
+    }
+    
+    .form-control:focus {
+      outline: none;
+      border-color: var(--primary-color);
+    }
+    
+    textarea.form-control {
+      min-height: 100px;
+      resize: vertical;
+    }
+    
+    .file-upload {
+      border: 2px dashed var(--border-color);
+      padding: 30px;
+      text-align: center;
+      border-radius: var(--radius);
+      cursor: pointer;
+      margin-bottom: 16px;
+      transition: all 0.2s;
+    }
+    
+    .file-upload:hover {
+      border-color: var(--primary-color);
+    }
+    
+    .file-upload p {
+      margin-top: 10px;
+      color: var(--secondary-color);
+    }
+    
+    #file-name {
+      margin-top: 10px;
+      font-size: 14px;
+    }
+    
+    .modal-footer {
+      padding: 20px;
+      border-top: 1px solid var(--border-color);
+      display: flex;
+      justify-content: flex-end;
+    }
+    
+    .btn-block {
+      width: 100%;
+    }
+    
+    .response {
+      background: var(--light-gray);
+      padding: 15px;
+      border-radius: var(--radius);
+      white-space: pre-wrap;
+      margin-top: 16px;
+      font-size: 14px;
+    }
+    
+    .user-menu {
+      position: relative;
+    }
+    
+    .user-avatar {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: var(--primary-color);
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    
+    .dropdown {
+      position: absolute;
+      top: 100%;
+      right: 0;
+      background: white;
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      min-width: 200px;
+      display: none;
+      z-index: 100;
+    }
+    
+    .dropdown.active {
+      display: block;
+    }
+    
+    .dropdown-item {
+      padding: 12px 16px;
+      border-bottom: 1px solid var(--border-color);
+      display: block;
+      color: var(--text-color);
+    }
+    
+    .dropdown-item:last-child {
+      border-bottom: none;
+    }
+    
+    .dropdown-item:hover {
+      background: var(--light-gray);
+    }
+    
+    /* Responsive */
+    @media (max-width: 768px) {
+      .header {
+        flex-direction: column;
+        padding: 16px;
+      }
+      
+      .search-container {
+        width: 100%;
+        margin: 16px 0;
+      }
+      
+      .nav {
+        width: 100%;
+        justify-content: space-between;
+      }
+      
+      .hero h1 {
+        font-size: 28px;
+      }
+      
+      .hero p {
+        font-size: 16px;
+      }
+      
+      .image-grid {
+        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Header -->
+  <header class="header">
+    <div class="logo">Public<span>Domain</span></div>
+    
+    <div class="search-container">
+      <input type="text" class="search-input" placeholder="Search public domain images..." id="searchInput">
+      <div class="search-icon">🔍</div>
+    </div>
+    
+    <nav class="nav">
+      <a href="#" class="nav-link" id="exploreLink">Explore</a>
+      <button class="btn btn-outline" id="loginBtn">Login</button>
+      <button class="btn" id="uploadBtn">Upload</button>
+      <div class="user-menu" id="userMenu" style="display: none;">
+        <div class="user-avatar" id="userAvatar">U</div>
+        <div class="dropdown" id="userDropdown">
+          <a href="#" class="dropdown-item" id="myUploadsLink">My Uploads</a>
+          <a href="#" class="dropdown-item" id="logoutBtn">Logout</a>
+        </div>
+      </div>
+    </nav>
+  </header>
+  
+  <!-- Hero -->
+  <section class="hero">
+    <div class="hero-content">
+      <h1>Discover Public Domain Images</h1>
+      <p>High-quality images free to use for any purpose</p>
+      <div class="hero-search">
+        <input type="text" placeholder="Search for beautiful public domain images" id="heroSearchInput">
+      </div>
+    </div>
+  </section>
+  
+  <!-- Main content -->
+  <main class="main">
+    <div class="tabs">
+      <div class="tab active" data-tab="all">All</div>
+      <div class="tab" data-tab="recent">Recent</div>
+      <div class="tab" data-tab="popular">Popular</div>
+      <div class="tab" data-tab="vintage">Vintage</div>
+    </div>
+    
+    <div class="image-grid" id="imageGrid">
+      <!-- Images will be loaded here -->
+    </div>
+  </main>
+  
+  <!-- Login Modal -->
+  <div class="modal" id="loginModal">
+    <div class="modal-content">
+      <button class="modal-close" id="closeLoginModal">×</button>
+      <div class="modal-header">
+        <h3 class="modal-title">Login</h3>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <label class="form-label">Email</label>
+          <input type="email" class="form-control" id="loginEmail" placeholder="Your email">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Password</label>
+          <input type="password" class="form-control" id="loginPassword" placeholder="Your password">
+        </div>
+        <button class="btn btn-block" id="loginSubmit">Login</button>
+        <p style="text-align: center; margin-top: 20px;">
+          Don't have an account? <a href="#" id="showRegisterBtn">Register</a>
+        </p>
+        <div class="response" id="loginResponse" style="display: none;"></div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Register Modal -->
+  <div class="modal" id="registerModal">
+    <div class="modal-content">
+      <button class="modal-close" id="closeRegisterModal">×</button>
+      <div class="modal-header">
+        <h3 class="modal-title">Create an account</h3>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <label class="form-label">Username</label>
+          <input type="text" class="form-control" id="regUsername" placeholder="Choose a username">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Email</label>
+          <input type="email" class="form-control" id="regEmail" placeholder="Your email">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Password</label>
+          <input type="password" class="form-control" id="regPassword" placeholder="Create a password">
+        </div>
+        <button class="btn btn-block" id="registerSubmit">Create Account</button>
+        <p style="text-align: center; margin-top: 20px;">
+          Already have an account? <a href="#" id="showLoginBtn">Login</a>
+        </p>
+        <div class="response" id="registerResponse" style="display: none;"></div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Upload Modal -->
+  <div class="modal" id="uploadModal">
+    <div class="modal-content">
+      <button class="modal-close" id="closeUploadModal">×</button>
+      <div class="modal-header">
+        <h3 class="modal-title">Upload an image</h3>
+      </div>
+      <div class="modal-body">
+        <div class="file-upload" id="fileUploadArea">
+          <svg width="40" height="40" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M12 5V19M5 12H19" stroke="#666" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          <p>Drag & drop or click to upload</p>
+          <input type="file" id="imageFile" accept="image/*" style="display: none;">
+          <div id="file-name"></div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Title</label>
+          <input type="text" class="form-control" id="imageTitle" placeholder="Enter a title">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Description</label>
+          <textarea class="form-control" id="imageDescription" placeholder="Describe your image"></textarea>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Author</label>
+          <input type="text" class="form-control" id="imageAuthor" placeholder="Original creator (if known)">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Year</label>
+          <input type="number" class="form-control" id="imageYear" placeholder="Year of creation (if known)">
+        </div>
+        <button class="btn btn-block" id="uploadSubmit">Upload Image</button>
+        <div class="response" id="uploadResponse" style="display: none;"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Image Detail Modal -->
+  <div class="modal" id="imageDetailModal">
+    <div class="modal-content" style="max-width: 1200px; border-radius: 0; padding: 0;">
+      <button class="modal-close" id="closeImageDetailModal" style="display: none;">×</button>
+      <div class="modal-body" style="padding: 0;">
+        <div id="imageDetailContent">
+          <!-- Content will be populated dynamically -->
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Redirect to React app if accessing admin route
+    if (window.location.pathname.startsWith('/admin') || 
+        window.location.pathname.startsWith('/batch-upload') ||
+        window.location.pathname.startsWith('/edit-image')) {
+        window.location.href = 'http://localhost:3001' + window.location.pathname;
+    }
+    
+    // API URL
+    const API_URL = 'http://localhost:5001/api';
+    
+    // DOM Elements
+    const loginBtn = document.getElementById('loginBtn');
+    const uploadBtn = document.getElementById('uploadBtn');
+    const loginModal = document.getElementById('loginModal');
+    const registerModal = document.getElementById('registerModal');
+    const uploadModal = document.getElementById('uploadModal');
+    const imageDetailModal = document.getElementById('imageDetailModal');
+    const closeLoginModal = document.getElementById('closeLoginModal');
+    const closeRegisterModal = document.getElementById('closeRegisterModal');
+    const closeUploadModal = document.getElementById('closeUploadModal');
+    const closeImageDetailModal = document.getElementById('closeImageDetailModal');
+    const showRegisterBtn = document.getElementById('showRegisterBtn');
+    const showLoginBtn = document.getElementById('showLoginBtn');
+    const loginSubmit = document.getElementById('loginSubmit');
+    const registerSubmit = document.getElementById('registerSubmit');
+    const uploadSubmit = document.getElementById('uploadSubmit');
+    const fileUploadArea = document.getElementById('fileUploadArea');
+    const imageFile = document.getElementById('imageFile');
+    const fileName = document.getElementById('file-name');
+    const searchInput = document.getElementById('searchInput');
+    const heroSearchInput = document.getElementById('heroSearchInput');
+    const tabs = document.querySelectorAll('.tab');
+    const imageGrid = document.getElementById('imageGrid');
+    const imageDetailContent = document.getElementById('imageDetailContent');
+    const userMenu = document.getElementById('userMenu');
+    const userAvatar = document.getElementById('userAvatar');
+    const userDropdown = document.getElementById('userDropdown');
+    const logoutBtn = document.getElementById('logoutBtn');
+    
+    // Auth state
+    let authToken = localStorage.getItem('authToken') || '';
+    let currentUser = JSON.parse(localStorage.getItem('currentUser') || 'null');
+    
+    // Update UI based on auth state
+    function updateAuthUI() {
+      if (authToken && currentUser) {
+        loginBtn.style.display = 'none';
+        userMenu.style.display = 'block';
+        userAvatar.textContent = currentUser.username.charAt(0).toUpperCase();
+      } else {
+        loginBtn.style.display = 'block';
+        userMenu.style.display = 'none';
+      }
+    }
+    
+    // Initialize auth UI
+    updateAuthUI();
+    
+    // Modal functions
+    function openModal(modal) {
+      modal.classList.add('active');
+      document.body.style.overflow = 'hidden';
+    }
+    
+    function closeModal(modal) {
+      modal.classList.remove('active');
+      document.body.style.overflow = 'auto';
+    }
+    
+    // Event Listeners
+    loginBtn.addEventListener('click', () => openModal(loginModal));
+    closeLoginModal.addEventListener('click', () => closeModal(loginModal));
+    
+    uploadBtn.addEventListener('click', () => {
+      if (!authToken) {
+        openModal(loginModal);
+        return;
+      }
+      openModal(uploadModal);
+    });
+    
+    closeUploadModal.addEventListener('click', () => closeModal(uploadModal));
+    closeRegisterModal.addEventListener('click', () => closeModal(registerModal));
+    closeImageDetailModal.addEventListener('click', () => closeModal(imageDetailModal));
+    
+    // Close image detail modal when clicking outside the image content
+    imageDetailModal.addEventListener('click', (e) => {
+      if (e.target === imageDetailModal) {
+        closeModal(imageDetailModal);
+      }
+    });
+    
+    showRegisterBtn.addEventListener('click', () => {
+      closeModal(loginModal);
+      openModal(registerModal);
+    });
+    
+    showLoginBtn.addEventListener('click', () => {
+      closeModal(registerModal);
+      openModal(loginModal);
+    });
+    
+    // File upload
+    fileUploadArea.addEventListener('click', () => {
+      imageFile.click();
+    });
+    
+    fileUploadArea.addEventListener('dragover', (e) => {
+      e.preventDefault();
+      fileUploadArea.style.borderColor = 'var(--primary-color)';
+    });
+    
+    fileUploadArea.addEventListener('dragleave', () => {
+      fileUploadArea.style.borderColor = 'var(--border-color)';
+    });
+    
+    fileUploadArea.addEventListener('drop', (e) => {
+      e.preventDefault();
+      fileUploadArea.style.borderColor = 'var(--border-color)';
+      if (e.dataTransfer.files.length) {
+        imageFile.files = e.dataTransfer.files;
+        fileName.textContent = e.dataTransfer.files[0].name;
+      }
+    });
+    
+    imageFile.addEventListener('change', () => {
+      if (imageFile.files.length) {
+        fileName.textContent = imageFile.files[0].name;
+      }
+    });
+    
+    // Tab switching
+    tabs.forEach(tab => {
+      tab.addEventListener('click', () => {
+        tabs.forEach(t => t.classList.remove('active'));
+        tab.classList.add('active');
+        loadImages(tab.dataset.tab);
+      });
+    });
+    
+    // User dropdown
+    userAvatar.addEventListener('click', () => {
+      userDropdown.classList.toggle('active');
+    });
+    
+    // Close dropdown when clicking outside
+    document.addEventListener('click', (e) => {
+      if (!userMenu.contains(e.target)) {
+        userDropdown.classList.remove('active');
+      }
+    });
+    
+    // Logout
+    logoutBtn.addEventListener('click', () => {
+      localStorage.removeItem('authToken');
+      localStorage.removeItem('currentUser');
+      authToken = '';
+      currentUser = null;
+      updateAuthUI();
+      userDropdown.classList.remove('active');
+    });
+    
+    // Search functionality
+    [searchInput, heroSearchInput].forEach(input => {
+      input.addEventListener('keyup', (e) => {
+        if (e.key === 'Enter') {
+          loadImages('all', input.value);
+          
+          // Sync both search inputs
+          if (input === searchInput) {
+            heroSearchInput.value = input.value;
+          } else {
+            searchInput.value = input.value;
+          }
+          
+          // Scroll to images
+          const mainSection = document.querySelector('.main');
+          mainSection.scrollIntoView({ behavior: 'smooth' });
+        }
+      });
+    });
+    
+    // Register form submission
+    registerSubmit.addEventListener('click', async () => {
+      const username = document.getElementById('regUsername').value;
+      const email = document.getElementById('regEmail').value;
+      const password = document.getElementById('regPassword').value;
+      const responseEl = document.getElementById('registerResponse');
+      
+      if (!username || !email || !password) {
+        responseEl.textContent = 'Please fill in all fields';
+        responseEl.style.display = 'block';
+        return;
+      }
+      
+      try {
+        const response = await fetch(`${API_URL}/auth/register`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ username, email, password })
+        });
+        
+        const data = await response.json();
+        responseEl.textContent = response.ok 
+          ? 'Registration successful! You can now login.' 
+          : `Error: ${data.message}`;
+        
+        responseEl.style.display = 'block';
+        
+        if (response.ok) {
+          // Auto-login after successful registration
+          authToken = data.token;
+          currentUser = data.user;
+          localStorage.setItem('authToken', authToken);
+          localStorage.setItem('currentUser', JSON.stringify(currentUser));
+          updateAuthUI();
+          
+          // Close register modal after a short delay
+          setTimeout(() => {
+            closeModal(registerModal);
+          }, 1500);
+        }
+      } catch (error) {
+        responseEl.textContent = `Error: ${error.message}`;
+        responseEl.style.display = 'block';
+      }
+    });
+    
+    // Login form submission
+    loginSubmit.addEventListener('click', async () => {
+      const email = document.getElementById('loginEmail').value;
+      const password = document.getElementById('loginPassword').value;
+      const responseEl = document.getElementById('loginResponse');
+      
+      if (!email || !password) {
+        responseEl.textContent = 'Please fill in all fields';
+        responseEl.style.display = 'block';
+        return;
+      }
+      
+      try {
+        const response = await fetch(`${API_URL}/auth/login`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email, password })
+        });
+        
+        const data = await response.json();
+        
+        if (response.ok && data.token) {
+          authToken = data.token;
+          currentUser = data.user;
+          localStorage.setItem('authToken', authToken);
+          localStorage.setItem('currentUser', JSON.stringify(currentUser));
+          updateAuthUI();
+          closeModal(loginModal);
+        } else {
+          responseEl.textContent = `Error: ${data.message}`;
+          responseEl.style.display = 'block';
+        }
+      } catch (error) {
+        responseEl.textContent = `Error: ${error.message}`;
+        responseEl.style.display = 'block';
+      }
+    });
+    
+    // Upload form submission
+    uploadSubmit.addEventListener('click', async () => {
+      if (!authToken) {
+        openModal(loginModal);
+        return;
+      }
+      
+      const title = document.getElementById('imageTitle').value;
+      const description = document.getElementById('imageDescription').value;
+      const author = document.getElementById('imageAuthor').value;
+      const year = document.getElementById('imageYear').value;
+      const responseEl = document.getElementById('uploadResponse');
+      
+      if (!title || !imageFile.files[0]) {
+        responseEl.textContent = 'Please provide a title and select an image';
+        responseEl.style.display = 'block';
+        return;
+      }
+      
+      const formData = new FormData();
+      formData.append('title', title);
+      formData.append('description', description || '');
+      formData.append('author', author || '');
+      formData.append('year', year || '');
+      formData.append('image', imageFile.files[0]);
+      
+      try {
+        responseEl.textContent = 'Uploading...';
+        responseEl.style.display = 'block';
+        
+        const response = await fetch(`${API_URL}/images`, {
+          method: 'POST',
+          headers: { 'Authorization': `Bearer ${authToken}` },
+          body: formData
+        });
+        
+        const data = await response.json();
+        
+        if (response.ok) {
+          responseEl.textContent = 'Image uploaded successfully!';
+          
+          // Reset form
+          document.getElementById('imageTitle').value = '';
+          document.getElementById('imageDescription').value = '';
+          document.getElementById('imageAuthor').value = '';
+          document.getElementById('imageYear').value = '';
+          fileName.textContent = '';
+          imageFile.value = '';
+          
+          // Reload images
+          loadImages('all');
+          
+          // Close modal after a delay
+          setTimeout(() => {
+            closeModal(uploadModal);
+            responseEl.style.display = 'none';
+          }, 1500);
+        } else {
+          responseEl.textContent = `Error: ${data.message}`;
+        }
+      } catch (error) {
+        responseEl.textContent = `Error: ${error.message}`;
+      }
+    });
+    
+    // Load images
+    async function loadImages(tab = 'all', search = '') {
+      try {
+        let url = `${API_URL}/images?`;
+        
+        // Add search query if provided
+        if (search) {
+          url += `search=${encodeURIComponent(search)}&`;
+        }
+        
+        // Add tab filter
+        if (tab === 'recent') {
+          url += 'sort=newest&';
+        } else if (tab === 'popular') {
+          url += 'sort=popular&';
+        } else if (tab === 'vintage') {
+          url += 'year=1900-1950&';
+        }
+        
+        const response = await fetch(url);
+        const data = await response.json();
+        
+        imageGrid.innerHTML = '';
+        
+        if (data.images && data.images.length > 0) {
+          data.images.forEach(image => {
+            const imageUrl = image.imageUrl.startsWith('http') 
+              ? image.imageUrl 
+              : `${window.location.origin}${image.imageUrl}`;
+            
+            const card = document.createElement('div');
+            card.className = 'image-card';
+            card.innerHTML = `
+              <img src="${imageUrl}" alt="${image.title}" loading="lazy">
+              <div class="image-info">
+                <h3 class="image-title">${image.title}</h3>
+                <div class="image-meta">
+                  <span class="image-author">${image.author || 'Unknown'}</span>
+                  <span class="image-year">${image.year || ''}</span>
+                </div>
+                ${image.tags && image.tags.length ? `
+                  <div class="tag-list">
+                    ${image.tags.slice(0, 3).map(tag => `<span class="tag">${tag}</span>`).join('')}
+                    ${image.tags.length > 3 ? `<span class="tag">+${image.tags.length - 3}</span>` : ''}
+                  </div>
+                ` : ''}
+              </div>
+            `;
+            
+            // Add click event to show image details
+            card.addEventListener('click', () => {
+              showImageDetails(image._id);
+            });
+            
+            imageGrid.appendChild(card);
+          });
+        } else {
+          imageGrid.innerHTML = `
+            <div style="grid-column: 1/-1; text-align: center; padding: 40px;">
+              <h3>No images found</h3>
+              <p style="color: var(--secondary-color); margin-top: 8px;">
+                ${search ? `No results for "${search}"` : 'Be the first to upload!'}
+              </p>
+            </div>
+          `;
+        }
+      } catch (error) {
+        console.error('Error loading images:', error);
+        imageGrid.innerHTML = `
+          <div style="grid-column: 1/-1; text-align: center; padding: 40px;">
+            <h3>Error loading images</h3>
+            <p style="color: var(--secondary-color); margin-top: 8px;">
+              Please try again later
+            </p>
+          </div>
+        `;
+      }
+    }
+    
+    // Function to show image details
+    async function showImageDetails(imageId) {
+      try {
+        const response = await fetch(`${API_URL}/images/${imageId}`);
+        const image = await response.json();
+        
+        if (!image) {
+          console.error('Image not found');
+          return;
+        }
+        
+        const imageUrl = image.imageUrl.startsWith('http') 
+          ? image.imageUrl 
+          : `${window.location.origin}${image.imageUrl}`;
+        
+        const tagsList = image.tags && image.tags.length 
+          ? image.tags.map(tag => `<span class="tag" style="cursor: pointer;">${tag}</span>`).join('') 
+          : '';
+        
+        const aiTagsList = image.aiTags && image.aiTags.length 
+          ? image.aiTags.map(tag => `<span class="tag" style="background: #e0f7fa; cursor: pointer;">${tag}</span>`).join('') 
+          : '';
+        
+        imageDetailContent.innerHTML = `
+          <div style="display: flex; flex-direction: column; max-height: 90vh;">
+            <!-- Header -->
+            <header style="display: flex; justify-content: space-between; align-items: center; padding: 16px 50px 16px 16px; border-bottom: 1px solid var(--border-color); background: white;">
+              <div style="display: flex; align-items: center;">
+                <div style="width: 32px; height: 32px; border-radius: 50%; background: var(--primary-color); display: flex; align-items: center; justify-content: center; margin-right: 12px;">
+                  <span style="color: white; font-weight: 600;">${image.uploadedBy?.username?.charAt(0).toUpperCase() || 'A'}</span>
+                </div>
+                <div>
+                  <div style="font-weight: 600; font-size: 15px;">${image.uploadedBy?.username || 'Anonymous'}</div>
+                  <div style="font-size: 12px; color: var(--secondary-color);">
+                    ${image.publicDomain ? 'Public Domain' : 'Copyright Protected'} 
+                    ${image.year ? `• ${image.year}` : ''}
+                  </div>
+                </div>
+              </div>
+              
+              <div style="display: flex; gap: 12px; align-items: center;">
+                <button class="btn btn-outline" style="padding: 8px 12px; display: flex; align-items: center; gap: 6px; cursor: pointer;">
+                  <svg width="16" height="16" viewBox="0 0 24 24" style="fill: currentColor;">
+                    <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+                  </svg>
+                  Like
+                </button>
+                <button class="btn btn-outline" style="padding: 8px 12px; display: flex; align-items: center; gap: 6px; cursor: pointer;">
+                  <svg width="16" height="16" viewBox="0 0 24 24" style="fill: currentColor;">
+                    <path d="M7 3h10v2h2v16H5V5h2V3zm4 4H9v2h2V7zm0 4H9v2h2v-2zm4-4h-2v2h2V7zm0 4h-2v2h2v-2z"/>
+                  </svg>
+                  Save
+                </button>
+                <button class="btn" style="padding: 8px 14px; display: flex; align-items: center; gap: 6px; cursor: pointer;" onclick="downloadImage('${imageUrl}', '${image.title}')">
+                  <svg width="16" height="16" viewBox="0 0 24 24" style="fill: white;">
+                    <path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/>
+                  </svg>
+                  Download
+                </button>
+                <button class="btn btn-outline" style="padding: 8px; display: flex; align-items: center; justify-content: center; cursor: pointer; width: 36px; height: 36px; border-radius: 50%;" onclick="closeModal(imageDetailModal)">
+                  <svg width="20" height="20" viewBox="0 0 24 24" style="fill: currentColor;">
+                    <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41z"/>
+                  </svg>
+                </button>
+              </div>
+            </header>
+            
+            <!-- Image -->
+            <div style="flex: 1; overflow: hidden; background: #000; display: flex; align-items: center; justify-content: center; min-height: 500px; max-height: 70vh;">
+              <img src="${imageUrl}" alt="${image.title}" style="max-width: 100%; max-height: 100%; object-fit: contain;">
+            </div>
+            
+            <!-- Info panel -->
+            <div style="background: white; padding: 24px; display: flex; flex-wrap: wrap; gap: 24px;">
+              <!-- Left column -->
+              <div style="flex: 1.5; min-width: 300px;">
+                <h2 style="margin-top: 0; margin-bottom: 16px; font-size: 24px;">${image.title}</h2>
+                
+                <div style="margin-bottom: 20px;">
+                  <p style="margin-top: 0; line-height: 1.6;">${image.description || (image.aiDescription || 'No description provided.')}</p>
+                </div>
+                
+                ${(tagsList || aiTagsList) ? `
+                <div style="margin-bottom: 24px;">
+                  <h3 style="font-size: 16px; margin-bottom: 12px;">Related Tags</h3>
+                  <div class="tag-list" style="margin-bottom: 8px; display: flex; flex-wrap: wrap; gap: 8px;">
+                    ${tagsList}
+                    ${aiTagsList ? aiTagsList : ''}
+                  </div>
+                </div>
+                ` : ''}
+              </div>
+              
+              <!-- Right column -->
+              <div style="flex: 1; min-width: 250px;">
+                <div style="background: var(--light-gray); border-radius: 8px; padding: 20px;">
+                  <h3 style="font-size: 16px; margin-top: 0; margin-bottom: 16px;">Image Details</h3>
+                  
+                  <div style="margin-bottom: 16px;">
+                    <div style="font-weight: 600; margin-bottom: 4px;">Creator</div>
+                    <div>${image.author || 'Unknown'}</div>
+                  </div>
+                  
+                  ${image.year ? `
+                  <div style="margin-bottom: 16px;">
+                    <div style="font-weight: 600; margin-bottom: 4px;">Year</div>
+                    <div>${image.year}</div>
+                  </div>
+                  ` : ''}
+                  
+                  <div style="margin-bottom: 16px;">
+                    <div style="font-weight: 600; margin-bottom: 4px;">License</div>
+                    <div>${image.publicDomain ? 'Public Domain' : 'Copyright Protected'}</div>
+                  </div>
+                  
+                  ${image.aiGenerated ? `
+                  <div style="margin-bottom: 16px;">
+                    <div style="font-weight: 600; margin-bottom: 4px;">AI Analysis</div>
+                    <div>${image.aiDescription || 'Image analyzed by AI'}</div>
+                  </div>
+                  ` : ''}
+                  
+                  ${image.exifData && Object.keys(image.exifData).length ? `
+                  <div style="margin-bottom: 16px;">
+                    <div style="font-weight: 600; margin-bottom: 4px;">Camera</div>
+                    <div>${image.exifData.make || ''} ${image.exifData.model || 'Not available'}</div>
+                  </div>
+                  ` : ''}
+                </div>
+              </div>
+            </div>
+          </div>
+        `;
+        
+        openModal(imageDetailModal);
+      } catch (error) {
+        console.error('Error fetching image details:', error);
+      }
+    }
+    
+    // Function to download image
+    function downloadImage(url, filename) {
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = filename;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    }
+    
+    // Load images on page load
+    loadImages('all');
+  </script>
+</body>
+</html>
