@@ -492,6 +492,28 @@ const HomePage = () => {
           </div>
         ) : error ? (
           <div>{error}</div>
+        ) : images.length === 0 && tagParam ? (
+          // No results for tag search
+          <div style={{ textAlign: 'center', padding: '3rem 1rem', color: '#666' }}>
+            <div style={{ fontSize: '1.3rem', marginBottom: '1rem' }}>
+              No images found with tag "{tagParam}"
+            </div>
+            <p>Try a different tag or browse the categories below</p>
+            <button 
+              onClick={() => navigate('/')} 
+              style={{ 
+                marginTop: '1.5rem',
+                padding: '0.8rem 1.5rem',
+                backgroundColor: '#0066cc',
+                color: 'white',
+                border: 'none',
+                borderRadius: '4px',
+                cursor: 'pointer'
+              }}
+            >
+              Clear Filter
+            </button>
+          </div>
         ) : (
           <>
             <ImageGrid images={images} />

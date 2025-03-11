@@ -64,15 +64,17 @@ exports.getAllImages = async (req, res) => {
     }
     
     if (req.query.tag) {
-      // Use exact match but case-insensitive
-      const tagRegex = new RegExp('^' + req.query.tag + '$', 'i');
+      // More flexible partial match for tags
+      const tagRegex = new RegExp(req.query.tag, 'i');
       filter.$or = [
+        // Exact matches
         { tags: req.query.tag },
         { aiTags: req.query.tag },
-        // Fallback to case-insensitive match if needed
-        { tags: tagRegex },
-        { aiTags: tagRegex }
+        // Partial matches within tags - this will match substrings
+        { tags: { $regex: tagRegex } },
+        { aiTags: { $regex: tagRegex } }
       ];
+      console.log(`Tag search for "${req.query.tag}" using filter:`, JSON.stringify(filter));
     }
     
     // Advanced search with AI-enhanced capabilities
