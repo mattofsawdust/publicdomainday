@@ -63,18 +63,24 @@ exports.getAllImages = async (req, res) => {
       filter.author = { $regex: req.query.author, $options: 'i' };
     }
     
+    // VERY STRICT TAG SEARCH IMPLEMENTATION - FIXES THE BICYCLES ISSUE
     if (req.query.tag) {
-      // More flexible partial match for tags
-      const tagRegex = new RegExp(req.query.tag, 'i');
-      filter.$or = [
-        // Exact matches
-        { tags: req.query.tag },
-        { aiTags: req.query.tag },
-        // Partial matches within tags - this will match substrings
-        { tags: { $regex: tagRegex } },
-        { aiTags: { $regex: tagRegex } }
-      ];
-      console.log(`Tag search for "${req.query.tag}" using filter:`, JSON.stringify(filter));
+      // Get the search tag and log it
+      const searchTag = req.query.tag.trim();
+      console.log(`[TAG SEARCH] Looking for images with tag: "${searchTag}"`);
+      
+      // Use simple equality match for MongoDB array
+      filter = { 
+        $or: [
+          { tags: searchTag },     // Exact tag match in user tags
+          { aiTags: searchTag }    // Exact tag match in AI tags
+        ]
+      };
+      
+      // Log everything for debugging
+      console.log(`[TAG SEARCH] MongoDB query: ${JSON.stringify(filter)}`);
+      console.log(`[TAG SEARCH] Searching tags field for exact value: ${searchTag}`);
+      console.log(`[TAG SEARCH] This is a strict equality match, no regex or substring matching`);
     }
     
     // Advanced search with AI-enhanced capabilities
@@ -108,6 +114,17 @@ exports.getAllImages = async (req, res) => {
       .skip(skip)
       .limit(limit)
       .populate('uploadedBy', 'username');
+      
+    // Log the number of images found
+    console.log(`[TAG SEARCH] Found ${images.length} matching images`);
+    
+    // Log the first few images and their tags for debugging
+    if (images.length > 0 && req.query.tag) {
+      console.log("[TAG SEARCH] First image details:");
+      console.log(`Title: ${images[0].title}`);
+      console.log(`Tags: ${images[0].tags?.join(', ')}`);
+      console.log(`AI Tags: ${images[0].aiTags?.join(', ')}`);
+    }
       
     const totalImages = await Image.countDocuments(filter);
     
@@ -443,12 +460,23 @@ exports.getTrendingImages = async (req, res) => {
     // Filter and search logic
     let filter = {};
     
+    // VERY STRICT TAG SEARCH FOR TRENDING - SAME FIX AS MAIN TAG SEARCH
     // Add category filter if provided
     if (category) {
-      filter.$or = [
-        { tags: { $in: [new RegExp(category, 'i')] } },
-        { aiTags: { $in: [new RegExp(category, 'i')] } }
-      ];
+      // Use the same approach as the main tag search
+      const searchTag = category.trim();
+      console.log(`[TRENDING] Looking for trending images with category tag: "${searchTag}"`);
+      
+      // Use simple equality match for MongoDB array
+      filter = { 
+        $or: [
+          { tags: searchTag },     // Exact tag match in user tags
+          { aiTags: searchTag }    // Exact tag match in AI tags
+        ]
+      };
+      
+      console.log(`[TRENDING] MongoDB query: ${JSON.stringify(filter)}`);
+      console.log(`[TRENDING] This is a strict equality match, no regex or substring matching`);
     }
     
     // Execute query with filters, sort by downloads
@@ -457,6 +485,9 @@ exports.getTrendingImages = async (req, res) => {
       .skip(skip)
       .limit(limit)
       .populate('uploadedBy', 'username');
+      
+    // Log the number of images found
+    console.log(`[TRENDING] Found ${images.length} trending images matching filter`);
       
     const totalImages = await Image.countDocuments(filter);
     

@@ -214,10 +214,15 @@ const HomePage = () => {
         limit: 20
       };
       
-      // If a tag parameter is provided (from URL), use it
+      // If a tag parameter is provided (from URL), use it exactly as is
       if (tagParam) {
         params.tag = tagParam;
-        console.log(`Filtering by tag parameter: "${tagParam}"`);
+        // Always ensure we reset when searching by tag
+        if (!reset) {
+          reset = true;
+          console.log(`Forcing reset for tag search`);
+        }
+        console.log(`Filtering by tag parameter (exact match): "${tagParam}"`);
       }
       // Otherwise, add search query if exists
       else if (searchTerm.trim()) {
@@ -229,7 +234,7 @@ const HomePage = () => {
         const selectedCategory = categories.find(cat => cat.id === activeCategory);
         if (selectedCategory) {
           params.tag = selectedCategory.name; // Use the original name with proper spacing
-          console.log(`Filtering by tag: "${selectedCategory.name}"`);
+          console.log(`Filtering by tag (from category): "${selectedCategory.name}"`);
         } else {
           params.tag = activeCategory;
           console.log(`Filtering by tag ID: "${activeCategory}"`);
@@ -346,6 +351,9 @@ const HomePage = () => {
       console.log(`Tag parameter found in URL: ${tagParam}`);
       setSearchTerm(''); // Clear any existing search
       
+      // Clear images first to avoid showing stale results
+      setImages([]);
+      
       // Try to find a matching category to set the UI state
       const matchingCategory = categories.find(cat => 
         cat.name.toLowerCase() === tagParam.toLowerCase() ||
@@ -358,8 +366,15 @@ const HomePage = () => {
         setActiveCategory('all'); // Reset category selection if no match
       }
       
-      // Set this tag as the search term to find related images
-      fetchImages(true, tagParam);
+      // Log the exact tag we're searching for to debug
+      console.log(`Searching for exact tag: "${tagParam}" - Starting fresh query`);
+      
+      // Short timeout to ensure state updates finish
+      setTimeout(() => {
+        // Set this tag as the search term to find related images
+        // Use exact tag matching by explicitly passing the tag parameter
+        fetchImages(true, tagParam);
+      }, 100);
     } 
     // Handle search parameter
     else if (searchParam) {
@@ -378,11 +393,38 @@ const HomePage = () => {
       fetchImages();
     }
     fetchCategories();
+    
+    // Add event listener for the custom refresh event
+    const handleRefreshImages = () => {
+      console.log('HomePage received refreshHomeImages event');
+      setActiveCategory('all');
+      setSearchTerm('');
+      setImages([]);
+      fetchImages(true);
+    };
+    
+    window.addEventListener('refreshHomeImages', handleRefreshImages);
+    
+    // Cleanup
+    return () => {
+      window.removeEventListener('refreshHomeImages', handleRefreshImages);
+    };
   }, []);
   
   // When filter changes, reset and fetch new images
   useEffect(() => {
-    fetchImages(true);
+    // Force a fresh fetch when category changes
+    if (activeCategory !== 'all') {
+      const selectedCategory = categories.find(cat => cat.id === activeCategory);
+      if (selectedCategory) {
+        console.log(`Category changed: Fetching images for "${selectedCategory.name}"`);
+        fetchImages(true, selectedCategory.name);
+      } else {
+        fetchImages(true);
+      }
+    } else {
+      fetchImages(true);
+    }
   }, [activeCategory]);
   
   const handleSearch = (e) => {

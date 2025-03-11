@@ -1,7 +1,7 @@
 import React from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import styled from 'styled-components';
-import { FaUser, FaSignOutAlt, FaUpload, FaCog, FaBlog, FaFire } from 'react-icons/fa';
+import { FaUser, FaSignOutAlt, FaUpload, FaCog, FaBlog, FaFire, FaHome } from 'react-icons/fa';
 import { useAuth } from '../../context/AuthContext';
 
 const HeaderContainer = styled.header`
@@ -106,6 +106,55 @@ const UserNavItem = styled(NavItem)`
   }
 `;
 
+// Styled component for the home button
+const HomeButtonStyled = styled.button`
+  background: none;
+  border: none;
+  cursor: pointer;
+  margin-left: 1.5rem;
+  color: #555;
+  font-size: 1rem;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  font-family: inherit;
+  
+  &:hover {
+    color: #0066cc;
+  }
+  
+  svg {
+    margin-right: 0.5rem;
+  }
+`;
+
+// Custom component for Home button to ensure it always clears filters
+const HomeButton = ({ children }) => {
+  const navigate = useNavigate();
+  const location = useLocation();
+  
+  const handleHomeClick = () => {
+    // Always go to home page with no query parameters
+    console.log('Home button clicked, clearing all filters');
+    
+    // First navigate to home without any parameters
+    navigate('/', { replace: true });
+    
+    // Then dispatch a custom event to force the homepage to reload images
+    setTimeout(() => {
+      const refreshEvent = new CustomEvent('refreshHomeImages');
+      window.dispatchEvent(refreshEvent);
+      console.log('Dispatched refreshHomeImages event');
+    }, 50);
+  };
+  
+  return (
+    <HomeButtonStyled onClick={handleHomeClick}>
+      {children}
+    </HomeButtonStyled>
+  );
+};
+
 const Header = () => {
   const { currentUser, logout } = useAuth();
   const navigate = useNavigate();
@@ -115,13 +164,31 @@ const Header = () => {
     navigate('/');
   };
   
+  // Custom logo that also clears filters
+  const handleLogoClick = (e) => {
+    e.preventDefault();
+    
+    // Navigate to home without parameters
+    navigate('/', { replace: true });
+    
+    // Then dispatch a custom event to force the homepage to reload images
+    setTimeout(() => {
+      const refreshEvent = new CustomEvent('refreshHomeImages');
+      window.dispatchEvent(refreshEvent);
+      console.log('Logo clicked: Dispatched refreshHomeImages event');
+    }, 50);
+  };
+
   return (
     <HeaderContainer>
-      <Logo to="/">Public Domain Day</Logo>
+      <Logo to="/" onClick={handleLogoClick}>Public Domain Day</Logo>
       
       <Nav>
         {currentUser ? (
           <>
+            <HomeButton>
+              <FaHome /> Home
+            </HomeButton>
             <NavItem to="/blog">
               <FaBlog /> Blog
             </NavItem>
@@ -146,6 +213,9 @@ const Header = () => {
           </>
         ) : (
           <>
+            <HomeButton>
+              <FaHome /> Home
+            </HomeButton>
             <NavItem to="/blog">
               <FaBlog /> Blog
             </NavItem>
