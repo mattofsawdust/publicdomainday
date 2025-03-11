@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
-import { FaDownload, FaThumbsUp, FaFire } from 'react-icons/fa';
+import { FaDownload, FaThumbsUp, FaFire, FaEye, FaHeart, FaRegHeart } from 'react-icons/fa';
 import { getTrendingImages } from '../utils/api';
+import Masonry from 'react-masonry-css';
 
 const PageContainer = styled.div`
   max-width: 1200px;
@@ -44,34 +45,45 @@ const CategoryButton = styled.button`
   }
 `;
 
-const GridContainer = styled.div`
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-  gap: 2rem;
+const MasonryGrid = styled(Masonry)`
+  display: flex;
+  width: 100%;
+  margin-left: -1rem; /* Compensate for gutter */
+  
+  .masonry-grid-column {
+    padding-left: 1rem; /* Gutter size */
+    background-clip: padding-box;
+  }
 `;
 
 const ImageCard = styled.div`
+  position: relative;
   border-radius: 8px;
   overflow: hidden;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  transition: transform 0.3s;
+  transition: transform 0.2s, box-shadow 0.2s;
+  margin-bottom: 1.5rem;
   
   &:hover {
     transform: translateY(-5px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+    
+    .overlay {
+      opacity: 1;
+    }
   }
 `;
 
 const ImageThumbnail = styled.div`
+  position: relative;
   width: 100%;
-  height: 200px;
   overflow: hidden;
-  background-color: #f0f0f0;
   
   img {
+    display: block;
     width: 100%;
-    height: 100%;
-    object-fit: cover;
-    transition: transform 0.3s;
+    height: auto;
+    transition: transform 0.3s ease;
   }
   
   ${ImageCard}:hover & img {
@@ -82,6 +94,21 @@ const ImageThumbnail = styled.div`
 const ImageInfo = styled.div`
   padding: 1rem;
   background-color: white;
+`;
+
+const ImageOverlay = styled.div`
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 1rem;
+  background: linear-gradient(transparent, rgba(0, 0, 0, 0.7));
+  color: white;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
 `;
 
 const Title = styled.h3`
@@ -213,36 +240,44 @@ const TrendingPage = () => {
       {loading && <Loading>Refreshing results...</Loading>}
       {error && <Error>{error}</Error>}
       
-      <GridContainer>
+      <MasonryGrid
+        breakpointCols={{
+          default: 4,
+          1200: 3,
+          900: 2,
+          600: 1
+        }}
+        className="masonry-grid"
+        columnClassName="masonry-grid-column"
+      >
         {images.map((image) => (
           <ImageCard key={image._id}>
-            <Link to={`/images/${image._id}`}>
+            <Link to={`/image/${image._id}`}>
               <ImageThumbnail>
                 <img 
                   src={image.imageUrl.startsWith('http') ? image.imageUrl : `http://localhost:5001${image.imageUrl}`} 
                   alt={image.title} 
                 />
+                <ImageOverlay className="overlay">
+                  <Title>{image.title}</Title>
+                  <Author>by {image.author || 'Unknown'}</Author>
+                  <Stats>
+                    <StatItem>
+                      <FaEye /> {image.views || 0}
+                    </StatItem>
+                    <StatItem>
+                      <FaDownload /> {image.downloads || 0}
+                    </StatItem>
+                    <StatItem>
+                      <FaHeart /> {image.likes ? image.likes.length : 0}
+                    </StatItem>
+                  </Stats>
+                </ImageOverlay>
               </ImageThumbnail>
             </Link>
-            
-            <ImageInfo>
-              <Link to={`/images/${image._id}`} style={{ textDecoration: 'none', color: 'inherit' }}>
-                <Title>{image.title}</Title>
-              </Link>
-              <Author>by {image.author || 'Unknown'}</Author>
-              
-              <Stats>
-                <StatItem>
-                  <FaDownload /> {image.downloads || 0}
-                </StatItem>
-                <StatItem>
-                  <FaThumbsUp /> {image.likes ? image.likes.length : 0}
-                </StatItem>
-              </Stats>
-            </ImageInfo>
           </ImageCard>
         ))}
-      </GridContainer>
+      </MasonryGrid>
       
       {images.length === 0 && !loading && (
         <div style={{ textAlign: 'center', margin: '3rem 0' }}>
